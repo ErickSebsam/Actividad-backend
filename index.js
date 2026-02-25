@@ -35,3 +35,24 @@ app.use((err, req, res, next) =>{
         mensaje: err.message || 'Error interno del servidor'
     })
 })
+
+
+// Middleware para rutas no encontradas
+app.use('*', (req, res) => {
+ res.status(404).json({
+ error: true,
+ mensaje: 'Endpoint no encontrado'
+ });
+});
+
+
+
+app.listen(PORT, () =>{
+  console.log(`Servidor corriendo en puerto ${PORT}`)
+  console.log(`Logs: ${procces.env.NODE_ENV || `development`}`)
+})
+
+
+
+
+
