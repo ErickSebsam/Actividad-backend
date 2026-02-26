@@ -45,7 +45,53 @@ app.use('*', (req, res) => {
  });
 });
 
+app.put('api/usuarios/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, email, password, rol } = req.body;
+        const usuario = await Usuario.buscarPorId(id);
+        if (!usuario) {
+            return res.status(404).json({
+                error: true,
+                mensaje: 'Usuario no encontrado'
+            });
+        }
+        if (usuario.rol !== 'admin') {
+            return res.status(403).json({
+                error: true,
+                mensaje: 'No tienes permisos para realizar esta acción'
+            });
+        }
+        if (nombre) {
+            usuario.nombre = nombre;
+        }
+        if (email) {
+            usuario.email = email;
+        }
+        if (password) {
+            usuario.password = password;
+        }
+        if (rol) {
+            usuario.rol = rol;
+        }
+        await Usuario.actualizar(id, usuario);
+        res.json({
+            error: false,
+            mensaje: 'Datos actualizados con éxito'
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            mensaje: error.message
+        });
+    }
+});
+app.delete('api/usuarios/:id', async (req, res) => {
+    try {
 
+    }
+    catch{}
+})
 
 app.listen(PORT, () =>{
   console.log(`Servidor corriendo en puerto ${PORT}`)
